@@ -11,6 +11,8 @@ services:
 
   tinywebhook:
     container_name: tinyWebhook
+    env_file:
+      - .env
     build: .
     ports:
       - 3000:5000
