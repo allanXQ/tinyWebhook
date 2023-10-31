@@ -37,7 +37,6 @@ jobs:
           scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
           scp -o StrictHostKeyChecking=no .dockerignore ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
           scp -o StrictHostKeyChecking=no package.json ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
-          scp -o StrictHostKeyChecking=no .env ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
 
       - name: Deploy to AWS
         run: |
