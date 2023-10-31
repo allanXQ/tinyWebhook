@@ -11,8 +11,8 @@ services:
 
   tinywebhook:
     container_name: node-api
+    image: allanxq/tinywebhook:latest
     env_file:
       - .env
-    build: .
     ports:
       - 3000:5000
