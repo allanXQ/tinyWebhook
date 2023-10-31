@@ -27,13 +27,13 @@ jobs:
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/tiny_webhook:latest
 
     - name: Set up SSH key
-        run: |
+        run:|
           echo ${{ secrets.SSH_verdant }} > verdant.pem
           chmod 600 verdant.pem
           ssh-agent -a $SSH_AUTH_SOCK
           ssh-add verdant.pem
 
     - name: Deploy to AWS
-        run: |
+        run:|
           ssh -o StrictHostKeyChecking=no -i verdant.pem ubuntu@${{secrets.VERDANT_PUBLIC_IP}} "mkdir -p tinyWebhook && cd tinyWebhook"
           ssh -o StrictHostKeyChecking=no -i verdant.pem ubuntu@${{secrets.VERDANT_PUBLIC_IP}} "docker pull ${{ secrets.DOCKER_USERNAME }}/tiny_webhook:latest && docker-compose down && docker-compose up -d"
