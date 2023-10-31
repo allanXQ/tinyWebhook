@@ -9,7 +9,7 @@ services:
       - ./data:/data/db
     restart: always
 
-  tinyWebhook:
+  tinywebhook:
     container_name: tinyWebhook
     build: .
     ports:
