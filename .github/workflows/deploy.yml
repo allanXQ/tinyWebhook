@@ -23,7 +23,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tiny_webhook:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tinywebhook:latest
 
   deploy:
     needs: build
@@ -39,12 +39,13 @@ jobs:
 
       - name: Copy files to AWS EC2
         run: |
-          # scp -o StrictHostKeyChecking=no Dockerfile ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook
           scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook
-          # scp -o StrictHostKeyChecking=no .dockerignore ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook
-          # scp -o StrictHostKeyChecking=no package.json ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook
+
+      - name: Clean Docker on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{secrets.VERDANT_PUBLIC_IP}} "sudo docker system prune -af"
 
       - name: Deploy to AWS
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{secrets.VERDANT_PUBLIC_IP}} "echo ${{ secrets.DOCKERHUB_TOKEN }} | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin"
-          ssh -o StrictHostKeyChecking=no ubuntu@${{secrets.VERDANT_PUBLIC_IP}} "cd tinyWebhook && sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/tiny_webhook:latest && sudo docker-compose down && sudo docker-compose up -d"
+          ssh -o StrictHostKeyChecking=no ubuntu@${{secrets.VERDANT_PUBLIC_IP}} "cd tinyWebhook && sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/tinywebhook:latest && sudo docker-compose down && sudo docker-compose up -d"

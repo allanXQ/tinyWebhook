@@ -1,7 +1,7 @@
 version: "3"
 services:
   mongodb:
-    container_name: tinyWebhook-mongodb
+    container_name: mongodb
     image: mongo:latest
     ports:
       - 27010:27017
@@ -10,7 +10,7 @@ services:
     restart: always
 
   tinywebhook:
-    container_name: tinyWebhook
+    container_name: node-api
     env_file:
       - .env
     build: .
