@@ -29,12 +29,10 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tiny_webhook:latest
 
-      - name: Set up SSH key
-        run: |
-          echo "${{ secrets.SSH_verdant }}" > verdant.pem
-          chmod 600 verdant.pem
-          eval $(ssh-agent -s)
-          ssh-add verdant.pem
+      - name: Setup SSH Agent
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to AWS
         run: |
