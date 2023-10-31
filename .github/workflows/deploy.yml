@@ -36,5 +36,5 @@ jobs:
 
       - name: Deploy to AWS
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@"${{ secrets.VERDANT_PUBLIC_IP }}" "mkdir -p tinyWebhook && cd tinyWebhook"
-          ssh -o StrictHostKeyChecking=no ubuntu@"${{ secrets.VERDANT_PUBLIC_IP }}" "docker pull ${{ secrets.DOCKER_USERNAME }}/tiny_webhook:latest && docker-compose down && docker-compose up -d"
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-234-212-0.compute-1.amazonaws.com "mkdir -p tinyWebhook && cd tinyWebhook"
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-234-212-0.compute-1.amazonaws.com "docker pull ${{ secrets.DOCKER_USERNAME }}/tiny_webhook:latest && docker-compose down && docker-compose up -d"
