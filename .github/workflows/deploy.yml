@@ -19,9 +19,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: list files
-        run: ls -la
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
@@ -33,6 +30,13 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.VERDANT_PRIVATE_KEY }}
+
+      - name: Copy files to AWS EC2
+        run: |
+          scp -o StrictHostKeyChecking=no Dockerfile ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
+          scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
+          scp -o StrictHostKeyChecking=no .dockerignore ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
+          scp -o StrictHostKeyChecking=no package.json ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
 
       - name: Deploy to AWS
         run: |
