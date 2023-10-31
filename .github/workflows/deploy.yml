@@ -31,12 +31,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.VERDANT_PRIVATE_KEY }}
 
-      - name: Copy files to AWS EC2
-        run: |
-          scp -o StrictHostKeyChecking=no Dockerfile ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
-          scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
-          scp -o StrictHostKeyChecking=no .dockerignore ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
-
       - name: Deploy to AWS
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-234-212-0.compute-1.amazonaws.com "echo ${{ secrets.DOCKERHUB_TOKEN }} | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin"
