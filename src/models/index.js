@@ -1,5 +1,5 @@
-const apps = require("./apps");
+const Apps = require("./apps");
 
 module.exports = {
-  apps,
+  Apps,
 };
