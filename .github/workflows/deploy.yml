@@ -6,9 +6,8 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -26,6 +25,11 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tiny_webhook:latest
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Setup SSH Agent
         uses: webfactory/ssh-agent@v0.5.4
         with:
@@ -33,10 +37,10 @@ jobs:
 
       - name: Copy files to AWS EC2
         run: |
-          scp -o StrictHostKeyChecking=no Dockerfile ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
-          scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
-          scp -o StrictHostKeyChecking=no .dockerignore ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
-          scp -o StrictHostKeyChecking=no package.json ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu/tinyWebhook/
+          scp -o StrictHostKeyChecking=no Dockerfile ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu
+          scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu
+          scp -o StrictHostKeyChecking=no .dockerignore ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu
+          scp -o StrictHostKeyChecking=no package.json ubuntu@${{ secrets.VERDANT_PUBLIC_IP }}:/home/ubuntu
 
       - name: Deploy to AWS
         run: |
