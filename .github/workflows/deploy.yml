@@ -32,7 +32,7 @@ jobs:
       - name: Setup SSH Agent
         uses: webfactory/ssh-agent@v0.5.4
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.VERDANT_PRIVATE_KEY }}
 
       - name: Deploy to AWS
         run: |
