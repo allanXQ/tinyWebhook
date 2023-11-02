@@ -1,0 +1,13 @@
+11 {
+  stkcallback: {
+    MerchantRequestID: '103342-68889359-1',
+    CheckoutRequestID: 'ws_CO_02112023043546680748517525',
+    ResultCode: 0,
+    ResultDesc: 'The service request is processed successfully.',
+    CallbackMetadata: { Item: [Array] },
+    TinyPesaID: '230fca10-7920-11ee-927c-b7f4ae1e337e',
+    ExternalReference: '6542fcf354c2b',
+    Amount: 11,
+    Msisdn: '254798765432'
+  }
+}

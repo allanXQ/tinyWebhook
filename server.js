@@ -8,12 +8,13 @@ const { errorHandler } = require("@middleware");
 const { DBConn, allowedOrigins } = require("@config");
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5005;
 
 app.use(helmet());
 
 app.use(
   cors({
+    origin: allowedOrigins,
     credentials: true,
   })
 );
