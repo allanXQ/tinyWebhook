@@ -8,14 +8,18 @@ const tinypesaWebhook = async (req, res) => {
     console.log(req.body);
     const stkCallback = req.body.Body.stkCallback;
     const { CallbackMetadata } = req.body.Body.stkCallback;
-    let MpesaReceiptNumber;
-    CallbackMetadata.Item.forEach(function (item) {
-      if (item.Name === "MpesaReceiptNumber") {
-        MpesaReceiptNumber = item.Value;
-      }
-    });
+
     const { ExternalReference, ResultCode, ResultDesc, Amount, Msisdn } =
       stkCallback;
+    let MpesaReceiptNumber;
+
+    if (ResultCode === 0) {
+      CallbackMetadata.Item.forEach(function (item) {
+        if (item.Name === "MpesaReceiptNumber") {
+          MpesaReceiptNumber = item.Value;
+        }
+      });
+    }
 
     const currentApp = await Services.findOne(Apps, {
       name: ExternalReference,
