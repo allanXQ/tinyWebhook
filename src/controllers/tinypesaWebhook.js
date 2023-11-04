@@ -1,50 +1,49 @@
-const { Apps } = require("@models");
-const messages = require("@utils");
-const Services = require("@services");
-const axios = require("axios");
+const { default: mongoose } = require("mongoose");
+const { users, mpesaDeposits } = require("@models");
+const { messages } = require("@utils");
 
 const tinypesaWebhook = async (req, res) => {
+  let session;
   try {
-    console.log(req.body);
-    const stkCallback = req.body.Body.stkCallback;
-    const { CallbackMetadata } = req.body.Body.stkCallback;
+    const { Msisdn, Amount, ResultDesc, ResultCode, MpesaReceiptNumber } =
+      req.body;
 
-    const { ExternalReference, ResultCode, ResultDesc, Amount, Msisdn } =
-      stkCallback;
-    let MpesaReceiptNumber;
+    session = await mongoose.startSession();
+    session.startTransaction();
 
-    if (ResultCode === 0) {
-      CallbackMetadata.Item.forEach(function (item) {
-        if (item.Name === "MpesaReceiptNumber") {
-          MpesaReceiptNumber = item.Value;
-        }
-      });
+    const userUpdate = await users.findOneAndUpdate(
+      { phone: Msisdn },
+      {
+        $inc: { accountBalance: Amount },
+      },
+      session
+    );
+    if (!userUpdate) {
+      return res.status(400).json({ message: messages.depositFailed });
     }
 
-    const currentApp = await Services.findOne(Apps, {
-      name: ExternalReference,
-      active: true,
-    });
+    await mpesaDeposits.create(
+      [
+        {
+          userId: userUpdate.userId,
+          phone: Msisdn,
+          amount: Amount,
+          mpesaRef: MpesaReceiptNumber || "none",
+          resultCode: ResultCode,
+          resultDesc: ResultDesc,
+          status: ResultCode == 0 ? "Success" : "Failed",
+        },
+      ],
+      session
+    );
 
-    if (currentApp) {
-      await axios
-        .post(currentApp.webhookUrl, {
-          Msisdn,
-          Amount,
-          MpesaReceiptNumber,
-          ResultCode,
-          ResultDesc,
-        })
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+    await session.commitTransaction();
+    session && session.endSession();
 
-    return 0;
+    return res.status(200).json({ message: messages.depositSuccess });
   } catch (error) {
+    session && (await session.abortTransaction());
+    session && session.endSession();
     throw error;
   }
 };
